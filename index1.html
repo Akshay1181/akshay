@@ -1,0 +1,160 @@
+<html>
+<head>
+    <title>
+        IT hackathon Redis
+    </title>
+        <link rel="stylesheet" href="https://unpkg.com/@clr/ui/clr-ui.min.css" />
+        <script src="https://unpkg.com/@webcomponents/custom-elements/custom-elements.min.js"></script>           
+        <script src="https://unpkg.com/@webcomponents/custom-elements/custom-elements.min.js"></script>
+        <script src="https://unpkg.com/@clr/icons/clr-icons-lite.min.js"></script>
+        <script src="https://unpkg.com/@clr/icons/shapes/social-shapes.min.js"></script>
+        <script src="https://unpkg.com/@clr/icons/shapes/travel-shapes.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+</head>
+<body>
+    <div class="main-container">
+        <header class="header-6">
+            <div class="branding">
+                <a href="index1.html" class="nav-link">
+                    <clr-icon shape="vm-bug"></clr-icon>
+                    <span class="title">IT hackathon Redis</span>
+                </a> 
+            </div>
+            <div class="header-nav">
+                <a href="index1.html" class="active nav-link"><span class="nav-text" >HOME</span></a>
+            </div>
+        </header>
+
+        <div class="content-container">
+            <div class="content-area">
+                <div>
+                    <input type="text" id="keyname" placeholder="Enter Key" class="clr-input"><br/>
+                    <input type="text" id="valuename" placeholder="Enter Value" class="clr-input"><br/><br/>                      
+                    
+                    <div class="btn-group btn-primary">
+                        <button id="set" class="btn btn-success" type="submit" >SET</button><br/>
+                        <button id="get" class="btn btn-primary" type="submit" >GET</button><br/>
+                        <button id="delete" class="btn btn-danger" type="submit" >DELETE</button><br/>
+                        <button id="getall" class="btn btn-primary" type="submit" >GET ALL</button><br/>
+                    </div>
+                </div>
+
+                <div class="clr-row">
+                    <div class="clr-col-12 clr-col-lg-6 clr-col-xl-4">
+                        <table class="table" id="table1"> 
+                            <thead>
+                                <tr>
+                                    <th>KEY</th>
+                                    <th>VALUE</th>
+                                </tr>   
+                            </thead>
+                            <tbody id="scdc">
+                            </tbody>
+                        </table>
+                    </div>
+    
+                    <div class="clr-col-12 clr-col-lg-6 clr-col-xl-4">
+                        <table class="table" id="table2"> 
+                            <thead>
+                                <tr>
+                                    <th>KEY</th>
+                                    <th>VALUE</th>
+                                </tr>   
+                            </thead>
+                            <tbody id="wdc">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>    
+            </div>
+            
+        </div> 
+    </div>
+
+    
+    <script type="text/javascript">
+        $(document).ready(function(){    
+            $("#table1").hide();   
+            $("#table2").hide();   
+            
+            $("#set").click(function(){    
+                var str1 = $("#keyname").val();
+                var str2 = $("#valuename").val();                                       
+                $.ajax({
+                    url: "http://88db6c98e75a.ngrok.io/data",
+                    type: 'POST',
+                    data: {keyname: str1, valuename: str2},
+                    dataType:'json', 
+                    success: function(res){     
+                        console.log(res);                     
+                   }  
+                });  
+            });
+
+            $("#get").click(function(){   
+                $("#table1").show();   
+                $("#table2").show();
+                var str1 = $("#keyname").val();
+                $.ajax({
+                    url: "http://localhost:3000/api/getbutton",
+                    type: 'POST',
+                    data: {keyname: str1},
+                    dataType:'json', 
+                    success: function(res){     
+                        console.log(res);   
+                        let tableData = []; 
+                        tableData.push('<tr><td>'+res.result1+'</td><td>'+res.result2+'</td></tr>');
+                        $('#scdc').html(tableData.join(""));
+                        $('#wdc').html(tableData.join(""));
+                   }  
+                });  
+            });
+
+            $("#delete").click(function(){   
+                var str1 = $("#keyname").val();
+                $.ajax({
+                    url: "http://localhost:3000/api/deletebutton",
+                    type: 'POST',
+                    data: {keyname: str1},
+                    dataType:'json', 
+                    success: function(res){     
+                        console.log(res);   
+                   }  
+                });  
+            });
+
+            $("#getall").click(function(){   
+                $("#table1").show();   
+                $("#table2").show();
+                var str1 = $("#keyname").val();
+                $.ajax({
+                    url: "http://88db6c98e75a.ngrok.io/data",
+                    type: 'GET',
+                    dataType:'application/json', 
+                    headers: {
+                        'Access-Control-Allow-Credentials' : true,
+                        'Access-Control-Allow-Origin': true,
+                        'Access-Control-Allow-Methods':'GET', 
+                        'Access-Control-Transfer-Encoding': 'chunked',
+                        'Access-Control-Allow-Headers':'application/json',
+                      },
+                    success: function(res){     
+                        console.log(res);   
+                        let tableData = []; 
+                        $.each(res, function(key, value) {
+                            console.log(res.result1);
+                            console.log(res.result2);
+                            //tableData.push('<tr><td>'+result1.key+'</td><td>'+result2.value+'</td></tr>');
+                        });
+                        
+                        //$('#scdc').html(tableData.join(""));
+                        //$('#wdc').html(tableData.join(""));
+                   }  
+                });  
+            });
+
+        });//End Document Ready
+    </script>
+</body>
+</html>
